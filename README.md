@@ -26,18 +26,11 @@ virtual machine are not required.
 >    Keil/CubeIDE-style breakpoints, stepping (including into the driver) and
 >    watch expressions.
 >
-> **Inicio rápido (ES):**
+> **En español: [LEEME.md](LEEME.md)** (instalación, consola, depuración, LabVIEW, pinout).
+>
 > ```bash
 > git clone https://github.com/IKGB105/Open6009.git && cd Open6009
-> ./install.sh
-> sudo install -Dm644 packaging/70-open6009.rules /etc/udev/rules.d/70-open6009.rules
-> sudo udevadm control --reload-rules && sudo udevadm trigger --subsystem-match=usb
-> .venv/bin/pip install matplotlib   # solo para daq.plot()
-> # reconecta la DAQ, luego:
-> .venv/bin/open6009 devices                        # debe listar 3923:717b
-> .venv/bin/python -i tools/daq.py                  # consola: ai(0), ao(0, 2.5)...
-> .venv/bin/python tools/labview_bridge.py          # servidor para LabVIEW
-> code .                                            # depurar: abre examples/debug_demo.py y F5
+> ./setup.sh     # venv + matplotlib + udev rule (asks for sudo) + device check
 > ```
 
 ![Open6009 workspace](docs/images/open6009-workspace.png)
