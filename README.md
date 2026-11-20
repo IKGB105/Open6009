@@ -5,6 +5,41 @@ National Instruments USB-6009 data-acquisition device (`3923:717b`). It uses
 the system `libusb-1.0` library directly: NI-DAQmx, NI-VISA, Windows, and a
 virtual machine are not required.
 
+> ## About this fork
+>
+> Fork of [MatthewM140/Open6009](https://github.com/MatthewM140/Open6009) with
+> three additions, tested on a real USB-6009 (Manjaro, Python 3.14):
+>
+> 1. **Firmware 0x0140 support.** Upstream frames were captured against
+>    DAQmx Base 15 firmware, whose discovery reply reports `01 32 c0 00`. A unit
+>    last used with full NI-DAQmx on Windows reports `01 40 c0 01` and was
+>    rejected on the first packet. Every other frame is identical, so only that
+>    expected reply changes. Verified: finite and continuous AI, AO0/AO1
+>    (loopback 0–5 V, error ≤ ~16 mV), DI, counter. DO is still untested.
+> 2. **LabVIEW bridge** (`tools/labview_bridge.py`): a plain-text TCP server
+>    (port 6009) so LabVIEW's built-in TCP VIs can drive the DAQ on Linux.
+>    Protocol is documented at the top of the file. It has no authentication,
+>    so it binds to localhost by default.
+> 3. **Python debugging helpers** (`tools/daq.py`, `.vscode/`,
+>    `examples/debug_demo.py`): `ai()`, `ao()`, `di()`, `do()`, `sweep()`,
+>    `plot()` and a `trace(True)` USB-packet dump. VS Code launch configs give
+>    Keil/CubeIDE-style breakpoints, stepping (including into the driver) and
+>    watch expressions.
+>
+> **Inicio rápido (ES):**
+> ```bash
+> git clone https://github.com/IKGB105/Open6009.git && cd Open6009
+> ./install.sh
+> sudo install -Dm644 packaging/70-open6009.rules /etc/udev/rules.d/70-open6009.rules
+> sudo udevadm control --reload-rules && sudo udevadm trigger --subsystem-match=usb
+> .venv/bin/pip install matplotlib   # solo para daq.plot()
+> # reconecta la DAQ, luego:
+> .venv/bin/open6009 devices                        # debe listar 3923:717b
+> .venv/bin/python -i tools/daq.py                  # consola: ai(0), ao(0, 2.5)...
+> .venv/bin/python tools/labview_bridge.py          # servidor para LabVIEW
+> code .                                            # depurar: abre examples/debug_demo.py y F5
+> ```
+
 ![Open6009 workspace](docs/images/open6009-workspace.png)
 
 ## Features
